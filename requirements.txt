@@ -8,4 +8,4 @@ pyfiglet==0.8.post0
 requests==2.25.1
 six==1.15.0
 soupsieve==2.2
-urllib3==1.26.3
+urllib3==1.26.4
