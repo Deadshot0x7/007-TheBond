@@ -146,7 +146,7 @@ if  __name__=="__main__":
             name=str(input ("Enter Username"))
             instagram(name)
             facebook(name)
-            pinrest(name)
+            pinterest(name)
             
             
             
