@@ -95,6 +95,21 @@ def find_ip(ip):
         print("\n Can't find the information for the given ip address ")
         return("\n Can't find the information for the given ip address ")
 
+def find_username(username):
+    print("\n")
+    try:
+        print("search:")
+        print("Facebook: https://www.facebook.com/{}".format(username))
+        print("Twitter: https://twitter.com/{}".format(username))
+        print("Instagram: https://www.instagram.com/{}/".format(username))
+        print("LinkedIn: https://www.linkedin.com/in/{}/".format(username))
+        print("Pinterest: https://www.pinterest.com/{}/".format(username)
+              #others 
+              return None
+    except Exception as e:
+        print("Can't find the user")
+        return "Can't find the user"
+
      
 # main function 
 if  __name__=="__main__":
@@ -123,6 +138,7 @@ if  __name__=="__main__":
         print("1.Instagram \t 2.Search")
         print("3.Phoneloopkup \t 4.Iplookup")
         print("5.Update \t 6.Search username Across the Social Media")
+        print("6,5.all social media")
         print("7.Exit")
         a=int(input("Select your option :\t"))
         if a == 1:
@@ -147,9 +163,9 @@ if  __name__=="__main__":
             instagram(name)
             facebook(name)
             pinrest(name)
-            
-            
-            
+        if a == 6,5:
+              username(find_username)
+             
         if a == 7:
             print("Closing the application in 10 second")
             time.sleep(1)
