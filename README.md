@@ -16,10 +16,10 @@
 
 ## Usage
 
-### 1. Clone the repository
+### 1. Clone the repository to your desired location
 
 ```
-git clone
+git clone https://github.com/Deadshot0x7/007-TheBond.git
 ```
 
 ### 2. Enter the **cloned** directory
@@ -75,9 +75,9 @@ Starring this repository would be wonderful, and anyone is welcome to fork this 
 
 Join our <a href='https://discord.gg/WAhQ8EcV4C'>Discord server</a> to get the latest updates and announcements on 007-TheBond.
 
-## Discussion
+## Discussions
 
-If you have any ideas or suggestions for 007-TheBond, let us know in the Discussions tab of this GitHub repository. Your views and thoughts are highly appreaciated. 🙌
+If you have any ideas or suggestions for 007-TheBond, let us know in the <a href='https://github.com/Deadshot0x7/007-TheBond/discussions'>Discussions</a> tab of this GitHub repository. Your views and thoughts are highly appreaciated. 🙌
 
 ## Sponsors And Donations
 
