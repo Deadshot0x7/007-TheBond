@@ -1,108 +1,120 @@
 #!/usr/bin/env python3
 
-# Imports
-import pyfiglet
-import logging
-import os
-import sys
-import time
+import subprocess, sys, time # replaced os with subprocess. its safer
 
-# Class Imports
-from Instagram import SearchInsta
-from Search import WebSearch
-from PhoneLookup import Lookup
-from IpLookup import IpLookup
-from SearchUsername import SearchUsername
-from EmailLookup import EmailLookup
-
-# Author
-author = "Deadshot0x7"
-
-
-# Main function
-if  __name__=="__main__":
-    # Print the banner
-    nameOfTheScript = "007-The Bond"
-    banner = pyfiglet.figlet_format(nameOfTheScript, font = "slant")
-    # a simple typewriter effect
-    for char in banner:
+try:
+    from Instagram import SearchInsta
+    from Search import WebSearch
+    from EmailLookup import EmailLookup
+    from SearchUsername import SearchUsername
+    from PhoneLookup import PhoneLookup
+    from IpLookup import IpLookup
+except (ModuleNotFoundError, ImportError) as e:
+    print(f"\033[31mimporting failed\033[0m. {e}")
+    sys.exit(1)
+# ui functions
+def typewriter(text:str, delay:float=0.001) -> None:
+    """
+    prints char by char to STDOUT
+    """
+    for char in text:
         sys.stdout.write(char)
+        time.sleep(delay)
         sys.stdout.flush()
-        time.sleep(0.002)
-    print()
 
-    # Information of the project and the author
-    print(f"\t Script by {author} V.3.0 \n \n") 
-    print(f"This script is for educational purpose only \n{author} will not responsible for any misuse or damage caused by this script")
-    print("Press Y to continue or any other key to exit")
+    print("\n")
 
-    # Input from the user to continue
-    choice = input(">>> ").lower()
 
-    if choice == 'y' or choice == 'yes':
-        logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
-        logging.info("Yes I will be responsible for any damage caused by this script")
-        logging.info("Starting the script")
+# helper functions
+def list_options() -> None:
+    """
+    lists all the options available
+    """
+    options:list[str] = [
+        "1. Scrape/Search Instagram",
+        "2. Google Search",
+        "3. Phone Number Lookup",
+        "4. Ip Lookup",
+        "5. Email Lookup",
+        "6. Search Username across the web",
+        "7. Update the tool",
+        "8. re-list the options",
+        "9. exit"
+    ]
 
-        # Use 'cls' for Windows and 'clear' for Unix/Linux/MacOS
-        os.system('cls' if os.name == 'nt' else 'clear')
-        print(banner)
-        print(f"\t Script by {author} V.3.0 \n \n") 
 
-        while True:
+    print("*" * 25 + " OPTIONS " + "*" * 25)
+    for option in options:
+        print(f"\033[33m\t+\033[0m{option.upper()}.")
 
-            print("1. Instagram    \t 2. Web Search")
-            print("3. Phone Lookup \t 4. Ip Address Lookup")
-            print("5. Email Lookup \t 6. Search username in all platforms")
-            print("7. Update       \t 8. Exit")
+# main entry
+def main():
+    tool_logo:str = r"""
+    0000             0000        7777777777777777/========___________
+   00000000         00000000      7777^^^^^^^7777/ || ||   ___________
+  000    000       000    000     777       7777/=========//
+ 000      000     000      000             7777// ((     //
+0000      0000   0000      0000           7777//   \\   //
+0000      0000   0000      0000          7777//========//
+0000      0000   0000      0000         7777
+0000      0000   0000      0000        7777
+ 000      000     000      000        7777
+  000    000       000    000       77777
+   00000000         00000000       7777777
+     0000             0000        777777777
 
-            option = input(">>> ")
+    """
 
-            if option == '1':
+    typewriter(tool_logo)
+    print("[user-agreement] by using this tool, you agree that the authors are not involved in any misuse of this tool. [Y]es [N]o")
+
+    warning_agreement = input("agree?: ")
+    if warning_agreement.lower() in ["y", "yes"]:
+        ...
+    else:
+        raise Exception("User-Agreement: user did not agree")
+
+    print("\033[2J\033[H") # clears the screen
+    list_options()
+
+    while True:
+        try:
+            option = int(input(">>> "))
+        except ValueError:
+            print("invalid input")
+            continue
+
+        match option:
+            case 1:
                 username = input("Enter the Instagram username: ")
                 SearchInsta(username)
-
-            elif option == '2':
+            case 2:
                 query = input("Search here: ")
                 WebSearch(query)
-
-            elif option == '3':
+            case 3:
                 phoneNo = input("Enter the phone no (with country code) : ")
-                Lookup(phoneNo)
-
-            elif option == '4':
+                PhoneLookup(phoneNo)
+            case 4:
                 ip = input("Enter the ip address: ")
                 IpLookup(ip)
-            
-            elif option == '5':
+            case 5:
                 email = input("Enter the email address: ")
                 EmailLookup(email)
-
-            
-            elif option == '6':
+            case 6:
                 username = input("Enter the username: ")
                 SearchUsername(username)
-            
-            elif option == '7':
+            case 7:
                 try:
-                    os.system("git pull")
-                except:
-                    logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
-                    logging.info("Error while updating the script")
-                    exit()
+                    subprocess.run(["git pull"])
+                except Exception as e:
+                    print(f"\033[31mfailed to update due to \033[0m{e}")
+            case 8:
+                list_options()
+            case 9:
+                sys.exit()
 
-            elif option == '8':
-                logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
-                logging.info("Exiting the script")
-                exit()
-            
-            else:
-                logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
-                logging.info("Invalid option")
-                exit()  
+            case _:
+                print("option not recognized")
 
-        
-    else:
-        logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
-        logging.info("You have choosen not to continue")
-        exit()
+if __name__ == "__main__":
+    main()
