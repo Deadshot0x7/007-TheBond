@@ -200,7 +200,7 @@ export PYTHONPATH="${PYTHONPATH}:/path/to/007-TheBond"
 ### API Keys (Optional):
 Some features may require API keys. Create a `.env` file:
 ```env
-HAVEIBEENPWNED_API_KEY=your_api_key_here
+HIBP_API_KEY=your_api_key_here
 SHODAN_API_KEY=your_shodan_key
 ```
 

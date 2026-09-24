@@ -1,42 +1,84 @@
-# Imports
-from email_validate import validate
+import email_validator
 import requests
-import hashlib
+import os
+
+
+class Color:
+    red = "\033[31m"
+    green = "\033[32m"
+    yellow = "\033[33m"
+    reset = "\033[0m"
+
 
 class EmailLookup:
     def __init__(self, email) -> None:
         self.email = email
+        self.hibp_api_key = os.getenv("HIBP_API_KEY") or input(">>> HaveiBeenPwned API-Key: ")
+        self.color = Color()
+        self.timeout = 10
         self.lookup()
-    
+
     def lookup(self):
         try:
             # Validate email
-            self.emailValidate = validate(email_address=self.email, check_format=True, check_blacklist=True, check_dns=True, dns_timeout=10, check_smtp=False, smtp_debug=False)
-            if self.emailValidate:
-                haveIBeenPwned = input("You entered a valid email, would you like to check if your email has been pwned? [y/n]: ")
-                if haveIBeenPwned.lower() == "y":
-                    self.haveIBeenPwned()
-                else:
-                    pass
-            else:
-                print("Invalid email address.")
+            try:
+                email_info = email_validator.validate_email(
+                    self.email, check_deliverability=False
+                )
+                self.email = email_info.normalized
+            except email_validator.EmailNotValidError:
+                print(
+                    f"[!] {self.color.red}{self.email}{self.color.reset} seems to be invalid."
+                )
+                return
+
+            hibp_data = self.check_hibp()
+
+            if not hibp_data:
+                print(f"{self.color.green}[v] no breaches found!{self.color.reset}")
+                return
+
+            print(f"[v] {self.color.green}gathered-data{self.color.reset}:")
+            for breach in hibp_data:
+                print(
+                    f"\t[{self.color.yellow}{breach['name']}{self.color.reset}] date: {breach['date']} | count: {breach['pwncount']:,} | leaked: {breach['types']}"
+                )
 
         except Exception as e:
-            print(f"Error: {e}. Unable to make a request to Email Lookup. \n")
-    
-    def haveIBeenPwned(self):
+            print(
+                f"[!] {self.color.red}unable to verify the given email{self.color.reset}"
+            )
+            print(f"[debug-error] {e}")
+
+    def check_hibp(self) -> list:
         try:
-            # Hash email
-            hashed_email = hashlib.sha1(self.email.encode('utf-8')).hexdigest().upper()
-            response = requests.get(f"https://api.pwnedpasswords.com/range/{hashed_email[:5]}").text
+            url = f"https://haveibeenpwned.com/api/v3/breachedaccount/{self.email}"
+            headers = {"hibp-api-key": self.hibp_api_key, "User-Agent": "007-TheBond"}
+            params = {"truncateResponse": "false"}
 
-            if hashed_email[5:] in response:
-                print(f"Your email has been pwned!")
-                print(f"It has been pwned {response.split(hashed_email[5:])[1].split(':')[1].strip()[0]} times! \n")
-            else:
-                print("Your email has not been pwned! \n")
+            res = requests.get(
+                url, headers=headers, params=params, timeout=self.timeout
+            )
+
+            if res.status_code == 404:
+                return []
+
+            res.raise_for_status()
+            data = res.json()
+
+            results = []
+            for breach in data:
+                results.append(
+                    {
+                        "name": breach["Title"],
+                        "date": breach["BreachDate"],
+                        "pwncount": breach["PwnCount"],
+                        "types": ", ".join(breach["DataClasses"]),
+                    }
+                )
+
+            return results
 
         except Exception as e:
-            print(f"Error: {e}. Unable to make a request to Have I Been Pwned. \n")
-
-
+            print(f"[debug-error] {e}")
+            return []

@@ -1,10 +1,7 @@
-pyfiglet # for banner of ASCII art
 phonenumbers # for phone number
 google # for google search
-urllib3 # for url
 requests # for url  
 curl_cffi # used to bypass instgram firewalls
-six # for url
 email-validate # for email validation
 
 
