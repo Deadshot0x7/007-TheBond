@@ -1,0 +1,10 @@
+.git
+.github
+assets
+venv
+.venv
+.env
+*.bat
+*.sh
+**/__pycache__
+results

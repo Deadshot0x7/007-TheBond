@@ -2,6 +2,6 @@ phonenumbers # for phone number
 google # for google search
 requests # for url  
 curl_cffi # used to bypass instgram firewalls
-email-validate # for email validation
+email-validator # for email validation
 
 
