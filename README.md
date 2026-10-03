@@ -37,28 +37,54 @@
 
 **Why Docker?** Docker ensures consistent performance across all platforms and eliminates dependency issues.
 
+**Available tags:** `latest` (current stable release) and `v3.0`. Pin a version tag for reproducible runs.
+
 ```bash
-# Pull the latest image
+# Pull the image
 docker pull deadshot0x7/007-thebond:latest
 
-# Run the tool interactively
-docker run -it deadshot0x7/007-thebond:latest
+# Run the tool interactively (-it is required for the CLI)
+docker run --rm -it deadshot0x7/007-thebond:latest
 
-# Run with volume mounting to save results
-docker run -it -v $(pwd)/results:/app/results deadshot0x7/007-thebond:latest
+# Mount a volume at /app/results for persistent results
+docker run --rm -it \
+  -v "$(pwd)/results:/app/results" \
+  deadshot0x7/007-thebond:latest
+
+# Pass API keys at runtime (never bake them into the image)
+docker run --rm -it -e HIBP_API_KEY=your_api_key_here deadshot0x7/007-thebond:latest
+# or from a .env file
+docker run --rm -it --env-file .env deadshot0x7/007-thebond:latest
+```
+
+> Inside the container, update with `docker pull` instead of menu option 7.
+
+**Build the image locally:**
+```bash
+git clone https://github.com/Deadshot0x7/007-TheBond.git
+cd 007-TheBond
+docker build -t deadshot0x7/007-thebond:v3.0 -t deadshot0x7/007-thebond:latest .
+docker run --rm -it deadshot0x7/007-thebond:v3.0
+```
+
+**Publish (maintainers only):**
+```bash
+docker login
+docker push deadshot0x7/007-thebond:v3.0
+docker push deadshot0x7/007-thebond:latest
 ```
 
 **Docker Compose (Optional):**
 ```yaml
-version: '3.8'
 services:
   osint-tool:
-    image: deadshot0x7/007-thebond:latest
+    image: deadshot0x7/007-thebond:v3.0
     stdin_open: true
     tty: true
+    environment:
+      - HIBP_API_KEY  # taken from your shell or .env, never stored in the image
     volumes:
       - ./results:/app/results
-      - ./config:/app/config
 ```
 
 ### 🛠️ **Method 2: Local Installation**
